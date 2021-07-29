@@ -40,10 +40,16 @@ public class PaymentController {
         log.info("返回--" + payment.toString());
         CommonResult<Payment> commonResult = null;
         if (payment != null) {
-            commonResult = new CommonResult<>(200, "查询成功:" +serverPort, payment);
+            commonResult = new CommonResult<>(200, "查询成功:" + serverPort, payment);
         } else {
             commonResult = new CommonResult<>(200, "查询失败", null);
         }
         return commonResult;
     }
+
+    @GetMapping(value = "/payment/lb")
+    public String getPaymentLB() {
+        return serverPort;
+    }
+
 }
