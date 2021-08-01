@@ -1,5 +1,6 @@
 package com.xtan.mycloud.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.xtan.mycloud.service.PaymentHystrixService;
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
 
 @RestController
 @Slf4j
+@DefaultProperties(defaultFallback = "paymentInfo_global")
 public class OrderHystrixController
 {
     @Resource
@@ -25,9 +27,10 @@ public class OrderHystrixController
     }
 
     @GetMapping("/consumer/payment/hystrix/timeout/{id}")
-    @HystrixCommand(fallbackMethod = "paymentInfo_TimeOutHandler",commandProperties = {
-            @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds",value="2000")
-    })
+//    @HystrixCommand(fallbackMethod = "paymentInfo_TimeOutHandler",commandProperties = {
+//            @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds",value="2000")
+//    })
+//    @HystrixCommand
     public String paymentInfo_TimeOut(@PathVariable("id") Integer id)
     {
         String result = paymentHystrixService.paymentInfo_TimeOut(id);
@@ -36,5 +39,11 @@ public class OrderHystrixController
 
     public String paymentInfo_TimeOutHandler(Integer id){
         return "/(ㄒoㄒ)/调用支付接口超时或异常 或自己异常---我是消费者80：\t"+ "\t当前线程池名字" + Thread.currentThread().getName();
+    }
+
+
+    public String paymentInfo_global (){
+
+        return "paymentInfo_global 全局统一 Hystrix ";
     }
 }
